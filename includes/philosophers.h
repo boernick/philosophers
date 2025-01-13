@@ -23,9 +23,9 @@ typedef struct	s_philo
 {
 	int id;
 	int	status;
-	int time_death;
-	int time_eat;
-	int	time_sleep;
+	int t_death;
+	int t_eat;
+	int	t_sleep;
 	int n_eat;
 	int	is_dead;
 } t_philo;
@@ -34,9 +34,11 @@ typedef struct	s_rules
 {
 	int	philos_n;
 	int philos_dead;
-	int time_death;
-	int	time_eat;
-	int	time_sleep;
+	int philos_fed;
+	int t_death;
+	int	t_eat;
+	int	t_sleep;
+	int	n_meals;
 } t_rules;
 
 #endif
