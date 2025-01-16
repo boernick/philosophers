@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/01/16 16:31:43 by nboer            ###   ########.fr       */
+/*   Updated: 2025/01/16 18:56:20 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ int	init_philos(t_rules *rules, t_philo *philo)
 	i = 0;
 	while (i < rules->philos_n)
 	{
-		philo[i].t_death = i;
+		philo[i].id = i;
 		philo[i].t_sleep = 0;
 		philo[i].t_eat = 0;
+		philo[i].
 		i++;
 	}
 }
@@ -42,19 +43,19 @@ int init_diner(t_rules *rules, char **argv)
 	set_rules(rules, argv);
 	if (wrong_input(rules, argv))
 		return (put_error("wrong input"));
-	
-
+	if (!mutex_init())
+		return 
 }
 
 int	wrong_input(t_rules *rules, char **argv)
 {
 	if (rules->philos_n <= 1 || rules->philos_n > 100 || rules->t_eat < 0 
 		|| rules->t_sleep < 0 || rules->t_death < 0)
-		return (EXIT_FAILURE);
+		return (1);
 	if (argv[5])
 	{
 		if (rules->n_meals < 1)
-			return (EXIT_FAILURE);
+			return (1);
 	}
 }
 
@@ -80,6 +81,8 @@ int	main(int argc, char **argv)
 	set_rules(&rules, argv);
 	if (argc != 5 && argc != 6)
 		return (put_error("Error: wrong argument count"));
+	init_diner(&rules, argv);
+	
 	init_philos(&rules, &philo);
-	//init_diner;
+	
 }
