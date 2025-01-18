@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nick <nick@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/01/16 18:56:20 by nboer            ###   ########.fr       */
+/*   Updated: 2025/01/18 21:48:05 by nick             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	put_error(char *msg)
 	return (EXIT_FAILURE);
 }
 
-int	init_philos(t_rules *rules, t_philo *philo)
+int	init_philos(t_data *rules, t_philo *philo)
 {
 	int	i;
 	
@@ -28,7 +28,6 @@ int	init_philos(t_rules *rules, t_philo *philo)
 		philo[i].id = i;
 		philo[i].t_sleep = 0;
 		philo[i].t_eat = 0;
-		philo[i].
 		i++;
 	}
 }
@@ -38,16 +37,17 @@ void	start_eating(t_philo *philo)
 	
 }
 
-int init_diner(t_rules *rules, char **argv)
+int init_diner(t_data *rules, t_philo *philo, char **argv)
 {
 	set_rules(rules, argv);
 	if (wrong_input(rules, argv))
 		return (put_error("wrong input"));
 	if (!mutex_init())
 		return 
+	init_philos(&rules, &philo);
 }
 
-int	wrong_input(t_rules *rules, char **argv)
+int	wrong_input(t_data *rules, char **argv)
 {
 	if (rules->philos_n <= 1 || rules->philos_n > 100 || rules->t_eat < 0 
 		|| rules->t_sleep < 0 || rules->t_death < 0)
@@ -59,7 +59,7 @@ int	wrong_input(t_rules *rules, char **argv)
 	}
 }
 
-void	set_rules(t_rules *rules, char **argv)
+void	set_rules(t_data *rules, char **argv)
 {
 	rules->philos_n = ft_atoi(argv[1]);
 	rules->t_death = ft_atoi(argv[2]);
@@ -75,14 +75,12 @@ void	set_rules(t_rules *rules, char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_rules rules;
+	t_data rules;
 	t_philo philo;
 	
 	set_rules(&rules, argv);
 	if (argc != 5 && argc != 6)
 		return (put_error("Error: wrong argument count"));
-	init_diner(&rules, argv);
-	
-	init_philos(&rules, &philo);
+	init_diner(&rules, &philo, argv);
 	
 }

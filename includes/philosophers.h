@@ -30,8 +30,9 @@ typedef struct	s_philo
 	int	is_dead;
 } t_philo;
 
-typedef struct	s_rules
+typedef struct	s_data
 {
+	t_philo philo[100];
 	int	philos_n;
 	int philos_dead;
 	int philos_fed;
@@ -39,6 +40,6 @@ typedef struct	s_rules
 	int	t_eat;
 	int	t_sleep;
 	int	n_meals;
-} t_rules;
+} t_data;
 
 #endif
