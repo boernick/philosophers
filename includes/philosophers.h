@@ -15,31 +15,30 @@
 #include "../includes/Libft/libft.h"
 #include "../includes/ft_printf/ft_printf.h"
 
-#define SLEEP 0
-#define EAT 1
-#define DEAD 2
-
 typedef struct	s_philo
 {
 	int id;
-	int	status;
 	int t_death;
 	int t_eat;
 	int	t_sleep;
 	int n_eat;
-	int	is_dead;
+	pthread_t	id_treath;
 } t_philo;
 
 typedef struct	s_data
 {
-	t_philo philo[100];
+	t_philo philo[200];
 	int	philos_n;
 	int philos_dead;
-	int philos_fed;
+	int philos_fed;	
 	int t_death;
 	int	t_eat;
 	int	t_sleep;
 	int	n_meals;
+	int deceased;
+	pthread_mutex_t print_lock;
+	pthread_mutex_t forks_lock[250];
+	pthread_mutex_t meal_lock;
 } t_data;
 
 #endif
