@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/01/20 14:26:55 by nboer            ###   ########.fr       */
+/*   Updated: 2025/01/30 14:44:54 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,23 @@ int	put_error(char *msg)
 	return (EXIT_FAILURE);
 }
 
-int	init_philos(t_data *rules, t_philo *philo)
+int	init_philos(t_data *data, t_philo *philo)
 {
 	int	i;
 
 	i = 0;
-	while (i < rules->philos_n)
+	while (i < data->philos_n)
 	{
 		philo[i].id = i;
-		philo[i].t_death = rules->t_death; //maybe not right.
+		philo[i].t_death = data->t_death; //maybe not right.
 		philo[i].t_sleep = 0; //fout
 		philo[i].t_eat = 0; //fout
-		philo[i].n_eat = 0; // fout
+		philo[i].n_eat = 0;
+		philo[i].fork_left = i;
+		philo[i].fork_right = (i + 1) % data->philos_n;
 		i++;
 	}
+	return (0);
 }
 
 void	start_eating(t_philo *philo)
@@ -53,16 +56,18 @@ int	mutex_init(t_data *data)
 		return (1);
 	if (pthread_mutex_init(&(data->meal_lock), NULL))
 		return (1);
+	return (0);
 }
 
-int init_diner(t_data *rules, t_philo *philo, char **argv)
+int prepare_diner(t_data *rules, t_philo *philo, char **argv)
 {
 	set_rules(rules, argv);
 	if (wrong_input(rules, argv))
 		return (put_error("wrong input"));
-	if (!mutex_init(&rules))
+	if (mutex_init(&rules))
 		return (put_error("mutex init failed"));
 	init_philos(&rules, &philo);
+	return (0);
 }
 
 int	wrong_input(t_data *rules, char **argv)
@@ -99,6 +104,6 @@ int	main(int argc, char **argv)
 	set_rules(&rules, argv);
 	if (argc != 5 && argc != 6)
 		return (put_error("Error: wrong argument count"));
-	init_diner(&rules, &philo, argv);
-	
+	prepare_diner(&rules, &philo, argv);
+	launch_diner(&rules);
 }

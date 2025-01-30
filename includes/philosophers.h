@@ -22,6 +22,8 @@ typedef struct	s_philo
 	int t_eat;
 	int	t_sleep;
 	int n_eat;
+	int fork_left;
+	int fork_right;
 	pthread_t	id_treath;
 } t_philo;
 
