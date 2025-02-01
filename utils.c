@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 17:25:07 by nboer             #+#    #+#             */
-/*   Updated: 2025/01/20 14:06:31 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/01 14:48:03 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	error_handler(char *str, int ret)
 	return (ret);
 }
 
-long long	delta_t(long long past, long long cur)
+long long	delta_time(long long past, long long cur)
 {
 	return (cur - past);
 }
