@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/01 19:02:42 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/01 19:22:34 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,10 +165,7 @@ void	set_rules(t_data *rules, char **argv)
 
 void	check_diner_end(t_data *rules, )
 {
-	int i;
 	while (!(rules->deceased))
-	i = 0;
-	while (i < rules->n_philos)
 	{
 		
 	}
