@@ -1,7 +1,7 @@
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g # -g flag for debugger info
-SRCS = main.c
+SRCS = main.c utils.c events.c
 
 OBJS = $(SRCS:.c=.o)
 HEADER = includes/philosophers.h
@@ -19,7 +19,7 @@ $(NAME): $(OBJS) $(PRINTF) $(LIBFT)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(PRINTF) $(LIBFT) -o $(NAME)
 
 %.o: %.c $(HEADER)
-	$(CC) $(CFLAGS) $(INCLUDES)-c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
 	make -C $(LIBFT_DIR) bonus

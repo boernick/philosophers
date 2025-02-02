@@ -15,18 +15,20 @@
 #include "../includes/Libft/libft.h"
 #include "../includes/ft_printf/ft_printf.h"
 
+struct s_data;
+
 typedef struct	s_philo
 {
-	int			id;
-	int			t_death;
-	int			t_eat;
-	int			t_sleep;
-	int			n_eat;
-	int			fork_left;
-	int			fork_right;
-	long long	last_meal;
-	pthread_t	id_thread;
-	t_data		*data;
+	int					id;
+	int					t_death;
+	int					t_eat;
+	int					t_sleep;
+	int					n_eat;
+	int					fork_left;
+	int					fork_right;
+	long long			last_meal;
+	pthread_t			id_thread;
+	struct s_data		*data;
 } t_philo;
 
 typedef struct	s_data
@@ -47,12 +49,21 @@ typedef struct	s_data
 	pthread_mutex_t	meal_lock;
 } t_data;
 
-void		print_event(t_data *data, long long time, int id, char *str);
-long long	delta_time(long long past, long long cur);
-long long	get_timestamp(void);
-int			error_handler(char *str, int ret);
 int			put_error(char *msg);
-int			init_philos(t_data *data, t_philo *philo);
-
+int			init_philos(t_data *data);
+void		do_event(long long time, t_data *rules);
+void		start_eat(t_philo *philo, t_data *rules);
+void		start_sleep(t_philo *philo, t_data *rules);
+void		start_think(t_philo *philo, t_data *rules);
+int			launch_diner(t_data *data);
+int			mutex_init(t_data *data);
+int			prepare_diner(t_data *rules, char **argv);
+int			wrong_input(t_data *rules, char **argv);
+void		set_rules(t_data *rules, char **argv);
+void		check_diner_end(t_data *data, t_philo *philo);
+int			error_handler(char *str, int ret);
+long long	d_time(long long past, long long cur);
+long long	get_timestamp(void);
+void		print_event(t_data *data, long long time, int id, char *str);
 
 #endif

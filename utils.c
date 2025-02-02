@@ -6,19 +6,19 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 17:25:07 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/01 14:48:03 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/02 18:10:22 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "includes/philosophers.h"
 
 int	error_handler(char *str, int ret)
 {
-	ft_put_endl(str, 2);
+	ft_putendl_fd(str, 2);
 	return (ret);
 }
 
-long long	delta_time(long long past, long long cur)
+long long	d_time(long long past, long long cur)
 {
 	return (cur - past);
 }
@@ -35,6 +35,17 @@ void	print_event(t_data *data, long long time, int id, char *str)
 {
 	pthread_mutex_lock(&(data->print_lock));
 	if (!data->deceased)
-		printf("%ld %i %s\n", time, id, str);
+		printf("%lld %i %s\n", time, id, str);
 	pthread_mutex_unlock(&(data->print_lock));
+}
+
+void	check_deceased(t_data *data, t_philo *philo)
+{
+	pthread_mutex_lock(&(data->meal_lock));
+	if (d_time(philo->last_meal, get_timestamp()) >= data->t_death)
+	{
+		print_event(data, get_timestamp(), philo->id, "died");
+		data->deceased = 1;
+	}
+	pthread_mutex_unlock(&(data->meal_lock));
 }

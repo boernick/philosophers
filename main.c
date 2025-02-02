@@ -6,11 +6,11 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/01 19:22:34 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/02 18:10:11 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "includes/philosophers.h"
 
 int	put_error(char *msg)
 {
@@ -18,70 +18,35 @@ int	put_error(char *msg)
 	return (EXIT_FAILURE);
 }
 
-int	init_philos(t_data *data, t_philo *philo)
+int	init_philos(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->n_philos)
 	{
-		philo[i].id = i;
-		philo[i].t_death = data->t_death; //maybe not right.
-		philo[i].t_sleep = 0; //fout
-		philo[i].t_eat = 0; //fout
-		philo[i].n_eat = 0;
-		philo[i].fork_left = i;
-		philo[i].fork_right = (i + 1) % data->n_philos;
-		philo[i].data = data;
+		data->philo[i].id = i;
+		data->philo[i].t_death = data->t_death;
+		data->philo[i].t_sleep = 0; //fout
+		data->philo[i].t_eat = 0; //fout
+		data->philo[i].n_eat = 0;
+		data->philo[i].fork_left = i;
+		data->philo[i].fork_right = (i + 1) % data->n_philos;
+		data->philo[i].data = data;
 		i++;
 	}
 	return (0);
-}
-void do_event(long long time, t_data *rules)
-{
-	long long	t_start;
-
-	t_start = get_timestamp();
-	while (!rules->deceased)
-	{
-		if (delta_time(t_start, get_timestamp()) >= time)
-			break;
-		usleep(100);
-	}
-}
-
-void	start_eat(t_philo *philo, t_data *rules)
-{
-	pthread_mutex_lock(&(rules->forks_lock[philo->fork_left]));
-	print_event(&rules, get_timestamp(), philo->id, "has taken a fork");
-	pthread_mutex_lock(&(rules->forks_lock[philo->fork_right]));
-	print_event(&rules, get_timestamp(), philo->id, "has taken a fork");
-	pthread_mutex_lock(&(rules->meal_lock));
-	print_event(&rules, get_timestamp(), philo->id, "is eating");
-	philo->last_meal = get_timestamp();
-	(philo->n_eat)++;
-	pthread_mutex_unlock(&(rules->meal_lock));
-	do_event(rules->t_eat, rules);
-	pthread_mutex_unlock(&(rules->forks_lock[philo->fork_left]));
-	pthread_mutex_unlock(&(rules->forks_lock[philo->fork_right]));
-}
-
-void	start_sleep(t_philo *philo, t_data *rules)
-{
-	print_event(&rules, get_timestamp(), philo->id, "is sleeping");
-	do_event(rules->t_sleep, rules);
-}
-
-void	start_think(t_philo *philo, t_data *rules)
-{
-	print_event(&rules, get_timestamp(), philo->id, "is thinking");
 }
 
 void	*philo_thread(void *void_philo) // function that runs when thread is created
 {
 	t_philo	*philo;
+	t_data	*data;
 	
 	philo = (t_philo *)void_philo;
+	data = philo->data;
+	if (!data)
+		put_error("data is NULL");
 	while (!(philo->data->deceased))
 	{
 		start_think(philo, philo->data);
@@ -90,9 +55,10 @@ void	*philo_thread(void *void_philo) // function that runs when thread is create
 				break;
 		start_sleep(philo, philo->data);
 	}
+	return (NULL);
 }
 
-void	launch_diner(t_philo *philo, t_data *data)
+int	launch_diner(t_data *data)
 {
 	int i;
 	int ret;
@@ -107,6 +73,7 @@ void	launch_diner(t_philo *philo, t_data *data)
 			return (error_handler("error creating thread", ret));
 		i++;
 	}
+	return (ret);
 }
 
 int	mutex_init(t_data *data)
@@ -126,14 +93,14 @@ int	mutex_init(t_data *data)
 	return (0);
 }
 
-int prepare_diner(t_data *rules, t_philo *philo, char **argv)
+int prepare_diner(t_data *rules, char **argv)
 {
 	set_rules(rules, argv);
 	if (wrong_input(rules, argv))
 		return (put_error("wrong input"));
-	if (mutex_init(&rules))
+	if (mutex_init(rules))
 		return (put_error("mutex init failed"));
-	init_philos(&rules, &philo);
+	init_philos(rules);
 	return (0);
 }
 
@@ -147,6 +114,7 @@ int	wrong_input(t_data *rules, char **argv)
 		if (rules->n_meals < 1)
 			return (1);
 	}
+	return (0);
 }
 
 void	set_rules(t_data *rules, char **argv)
@@ -163,11 +131,31 @@ void	set_rules(t_data *rules, char **argv)
 		rules->n_meals = -1;
 }
 
-void	check_diner_end(t_data *rules, )
+void	check_diner_end(t_data *data, t_philo *philo)
 {
-	while (!(rules->deceased))
+	int	i;
+
+	while (!(data->end_meals))
 	{
-		
+		i = 0;
+		while(i < data->n_philos && !(data->deceased))
+		{
+			check_deceased(data, &philo[i]);
+			usleep(100);
+			i++;
+		}
+		if (data->deceased)
+			break;
+		i = 0;
+		while(philo[i].n_eat >= data->n_meals && data->n_meals != -1)
+		{
+			if (i == data->n_philos)
+			{
+				data->end_meals = 1;
+				return;
+			}
+			i++;
+		}
 	}
 }
 
@@ -175,11 +163,12 @@ int	main(int argc, char **argv)
 {
 	t_data	rules;
 	t_philo	philo;
-
-	set_rules(&rules, argv);
+	int ret;
+	
+	ret = 0;
 	if (argc != 5 && argc != 6)
 		return (put_error("Error: wrong argument count"));
-	prepare_diner(&rules, &philo, argv);
-	launch_diner(&philo, &rules);
-	check_diner_end(&rules);
+	prepare_diner(&rules, argv);
+	ret = launch_diner(&rules);
+	check_diner_end(&rules, &philo);
 }
