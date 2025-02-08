@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/02 18:10:11 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/08 19:42:57 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,11 @@ int	init_philos(t_data *data)
 	while (i < data->n_philos)
 	{
 		data->philo[i].id = i;
-		data->philo[i].t_death = data->t_death;
-		data->philo[i].t_sleep = 0; //fout
-		data->philo[i].t_eat = 0; //fout
 		data->philo[i].n_eat = 0;
 		data->philo[i].fork_left = i;
 		data->philo[i].fork_right = (i + 1) % data->n_philos;
 		data->philo[i].data = data;
+		data->philo[i].last_meal = get_timestamp();
 		i++;
 	}
 	return (0);
@@ -45,15 +43,18 @@ void	*philo_thread(void *void_philo) // function that runs when thread is create
 	
 	philo = (t_philo *)void_philo;
 	data = philo->data;
+	if (philo->id % 2)
+		usleep(10000);
 	if (!data)
 		put_error("data is NULL");
+	printf("%lli timestamp in philothread for last meal\n", philo->last_meal);
 	while (!(philo->data->deceased))
 	{
-		start_think(philo, philo->data);
 		start_eat(philo, philo->data); // after eating event, add lock
 			if (philo->data->end_meals)
 				break;
 		start_sleep(philo, philo->data);
+		start_think(philo, philo->data);
 	}
 	return (NULL);
 }
@@ -68,6 +69,7 @@ int	launch_diner(t_data *data)
 	ret = 0;
 	while (i < data->n_philos)
 	{
+		printf("philo %i last meal time stamp = %lli\n", i, data->philo[i].last_meal); //debug
 		ret = pthread_create(&(data->philo[i].id_thread), NULL, philo_thread, &(data->philo[i]));
 		if (ret)
 			return (error_handler("error creating thread", ret));
@@ -83,7 +85,8 @@ int	mutex_init(t_data *data)
 	i = 0;
 	while (i < data->n_philos)
 	{
-		pthread_mutex_init(&(data->forks_lock[i]), NULL);
+		if (pthread_mutex_init(&(data->forks_lock[i]), NULL))
+			return (1);
 		i++;
 	}
 	if (pthread_mutex_init(&(data->print_lock), NULL))
@@ -140,7 +143,7 @@ void	check_diner_end(t_data *data, t_philo *philo)
 		i = 0;
 		while(i < data->n_philos && !(data->deceased))
 		{
-			check_deceased(data, &philo[i]);
+			check_deceased(&philo[i], data);
 			usleep(100);
 			i++;
 		}

@@ -20,9 +20,6 @@ struct s_data;
 typedef struct	s_philo
 {
 	int					id;
-	int					t_death;
-	int					t_eat;
-	int					t_sleep;
 	int					n_eat;
 	int					fork_left;
 	int					fork_right;
@@ -65,5 +62,6 @@ int			error_handler(char *str, int ret);
 long long	d_time(long long past, long long cur);
 long long	get_timestamp(void);
 void		print_event(t_data *data, long long time, int id, char *str);
+void		check_deceased(t_philo *philo, t_data *rules);
 
 #endif
