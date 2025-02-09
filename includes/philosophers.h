@@ -63,5 +63,6 @@ long long	d_time(long long past, long long cur);
 long long	get_timestamp(void);
 void		print_event(t_data *data, long long time, int id, char *str);
 void		check_deceased(t_philo *philo, t_data *rules);
+void		join_threads(t_data *data);
 
 #endif

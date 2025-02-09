@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/09 17:09:46 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/09 17:46:22 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,8 @@ void	check_diner_end(t_data *data)
 		i = 0;
 		while(data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
 		{
+			printf("Philo %i times eaten %i\n", i, data->philo[i].n_eat);
+			sleep(2);
 			if (i == data->n_philos)
 			{
 				data->end_meals = 1;
@@ -159,6 +161,18 @@ void	check_diner_end(t_data *data)
 			}
 			i++;
 		}
+	}
+}
+
+void	join_threads(t_data *data)
+{
+	int i;
+	
+	i = 0;
+	while (i < data->n_philos)
+	{
+		pthread_join(data->philo[i].id_thread, NULL); //DIT AANPASSEN NAAR DE THREAD? 
+		i++;
 	}
 }
 
@@ -173,4 +187,6 @@ int	main(int argc, char **argv)
 	prepare_diner(&rules, argv);
 	ret = launch_diner(&rules);
 	check_diner_end(&rules);
+	join_threads(&rules);
+	return (ret);
 }
