@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/08 19:42:57 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/09 17:09:46 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void	set_rules(t_data *rules, char **argv)
 		rules->n_meals = -1;
 }
 
-void	check_diner_end(t_data *data, t_philo *philo)
+void	check_diner_end(t_data *data)
 {
 	int	i;
 
@@ -143,14 +143,14 @@ void	check_diner_end(t_data *data, t_philo *philo)
 		i = 0;
 		while(i < data->n_philos && !(data->deceased))
 		{
-			check_deceased(&philo[i], data);
+			check_deceased(&(data->philo[i]), data);
 			usleep(100);
 			i++;
 		}
 		if (data->deceased)
 			break;
 		i = 0;
-		while(philo[i].n_eat >= data->n_meals && data->n_meals != -1)
+		while(data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
 		{
 			if (i == data->n_philos)
 			{
@@ -165,7 +165,6 @@ void	check_diner_end(t_data *data, t_philo *philo)
 int	main(int argc, char **argv)
 {
 	t_data	rules;
-	t_philo	philo;
 	int ret;
 	
 	ret = 0;
@@ -173,5 +172,5 @@ int	main(int argc, char **argv)
 		return (put_error("Error: wrong argument count"));
 	prepare_diner(&rules, argv);
 	ret = launch_diner(&rules);
-	check_diner_end(&rules, &philo);
+	check_diner_end(&rules);
 }

@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 18:07:42 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/08 19:50:43 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/09 17:12:41 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	start_eat(t_philo *philo, t_data *rules)
 	philo->last_meal = get_timestamp();
 	pthread_mutex_unlock(&(rules->meal_lock));
 	(philo->n_eat)++;
+	printf("philo %i has eaten %i times\n", philo->id, philo->n_eat);
 	do_event(rules->t_eat, rules);
 	pthread_mutex_unlock(&(rules->forks_lock[philo->fork_left]));
 	pthread_mutex_unlock(&(rules->forks_lock[philo->fork_right]));
@@ -58,8 +59,6 @@ void	check_deceased(t_philo *philo, t_data *data)
 	if (d_time(philo->last_meal, get_timestamp()) > data->t_death)
 	{
 		print_event(data, get_timestamp(), philo->id, "died");
-		printf("current time = %lli, last meal at %lli and time dif = %lli\n", 
-			get_timestamp(),philo->last_meal, d_time(philo->last_meal, get_timestamp())); //debug
 		data->deceased = 1;
 	}
 	pthread_mutex_unlock(&(data->meal_lock));

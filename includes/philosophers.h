@@ -57,7 +57,7 @@ int			mutex_init(t_data *data);
 int			prepare_diner(t_data *rules, char **argv);
 int			wrong_input(t_data *rules, char **argv);
 void		set_rules(t_data *rules, char **argv);
-void		check_diner_end(t_data *data, t_philo *philo);
+void		check_diner_end(t_data *data);
 int			error_handler(char *str, int ret);
 long long	d_time(long long past, long long cur);
 long long	get_timestamp(void);
