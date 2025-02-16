@@ -31,15 +31,15 @@ typedef struct	s_philo
 typedef struct	s_data
 {
 	t_philo			philo[250];
-	int				n_philos; // amount of philosophers
-	int 			philos_dead; // 
+	int				n_philos;
+	int 			philos_dead;
 	int 			n_philos_fed;	
-	int 			t_death; // user input: time till die
-	int				t_eat; // user input: time how long it takes to eat
-	int				t_sleep; // user input: time a philosopher will spend sleeping
-	int				n_meals; // user input: amoutn of times all philosophers must eat before simulation ends. if not specified, then continue untill deceased.
-	int 			deceased; // 0 standard, if 1 then philo died;
-	int				end_meals; // 0 standard, 1 if all philosophers had n_meals.
+	int 			t_death;
+	int				t_eat;
+	int				t_sleep;
+	int				n_meals;
+	int 			deceased;
+	int				end_meals;
 	long long		diner_start;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	forks_lock[250];
@@ -64,5 +64,6 @@ long long	get_timestamp(void);
 void		print_event(t_data *data, long long time, int id, char *str);
 void		check_deceased(t_philo *philo, t_data *rules);
 void		join_threads(t_data *data);
+void		destroy_mutex(t_data *data);
 
 #endif

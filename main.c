@@ -3,21 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nick <nick@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/09 17:46:22 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/16 16:30:05 by nick             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/philosophers.h"
 
-int	put_error(char *msg)
-{
-	ft_putendl_fd(msg, STDERR_FILENO);
-	return (EXIT_FAILURE);
-}
-
+// init philosopher struct.
 int	init_philos(t_data *data)
 {
 	int	i;
@@ -36,7 +31,8 @@ int	init_philos(t_data *data)
 	return (0);
 }
 
-void	*philo_thread(void *void_philo) // function that runs when thread is created
+// function to run by every thread, resembling a philo.
+void	*philo_thread(void *void_philo)
 {
 	t_philo	*philo;
 	t_data	*data;
@@ -44,21 +40,22 @@ void	*philo_thread(void *void_philo) // function that runs when thread is create
 	philo = (t_philo *)void_philo;
 	data = philo->data;
 	if (philo->id % 2)
-		usleep(10000);
+		usleep(3000);
 	if (!data)
 		put_error("data is NULL");
 	printf("%lli timestamp in philothread for last meal\n", philo->last_meal);
-	while (!(philo->data->deceased))
+	while (!(philo->data->deceased) && !(philo->data->end_meals))
 	{
-		start_eat(philo, philo->data); // after eating event, add lock
-			if (philo->data->end_meals)
-				break;
+		start_eat(philo, philo->data);
+		if (philo->data->end_meals)
+			break;
 		start_sleep(philo, philo->data);
 		start_think(philo, philo->data);
 	}
 	return (NULL);
 }
 
+// create thread for each philosopher.
 int	launch_diner(t_data *data)
 {
 	int i;
@@ -69,7 +66,6 @@ int	launch_diner(t_data *data)
 	ret = 0;
 	while (i < data->n_philos)
 	{
-		printf("philo %i last meal time stamp = %lli\n", i, data->philo[i].last_meal); //debug
 		ret = pthread_create(&(data->philo[i].id_thread), NULL, philo_thread, &(data->philo[i]));
 		if (ret)
 			return (error_handler("error creating thread", ret));
@@ -78,24 +74,7 @@ int	launch_diner(t_data *data)
 	return (ret);
 }
 
-int	mutex_init(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->n_philos)
-	{
-		if (pthread_mutex_init(&(data->forks_lock[i]), NULL))
-			return (1);
-		i++;
-	}
-	if (pthread_mutex_init(&(data->print_lock), NULL))
-		return (1);
-	if (pthread_mutex_init(&(data->meal_lock), NULL))
-		return (1);
-	return (0);
-}
-
+// initiates structs and error checks.
 int prepare_diner(t_data *rules, char **argv)
 {
 	set_rules(rules, argv);
@@ -107,6 +86,7 @@ int prepare_diner(t_data *rules, char **argv)
 	return (0);
 }
 
+// check for input errors.
 int	wrong_input(t_data *rules, char **argv)
 {
 	if (rules->n_philos <= 1 || rules->n_philos > 100 || rules->t_eat < 0 
@@ -120,6 +100,7 @@ int	wrong_input(t_data *rules, char **argv)
 	return (0);
 }
 
+// init rules from arguments given by user.
 void	set_rules(t_data *rules, char **argv)
 {
 	rules->n_philos = ft_atoi(argv[1]);
@@ -134,6 +115,7 @@ void	set_rules(t_data *rules, char **argv)
 		rules->n_meals = -1;
 }
 
+// checks if a philo died or if all philos have eaten n_meals.
 void	check_diner_end(t_data *data)
 {
 	int	i;
@@ -152,27 +134,13 @@ void	check_diner_end(t_data *data)
 		i = 0;
 		while(data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
 		{
-			printf("Philo %i times eaten %i\n", i, data->philo[i].n_eat);
-			sleep(2);
-			if (i == data->n_philos)
+			if (i == data->n_philos - 1)
 			{
 				data->end_meals = 1;
 				return;
 			}
 			i++;
 		}
-	}
-}
-
-void	join_threads(t_data *data)
-{
-	int i;
-	
-	i = 0;
-	while (i < data->n_philos)
-	{
-		pthread_join(data->philo[i].id_thread, NULL); //DIT AANPASSEN NAAR DE THREAD? 
-		i++;
 	}
 }
 
@@ -188,5 +156,6 @@ int	main(int argc, char **argv)
 	ret = launch_diner(&rules);
 	check_diner_end(&rules);
 	join_threads(&rules);
+	destroy_mutex(&rules);
 	return (ret);
 }

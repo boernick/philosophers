@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   events.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nick <nick@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 18:07:42 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/09 17:12:41 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/16 16:19:31 by nick             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void do_event(long long time, t_data *rules)
 
 void	start_eat(t_philo *philo, t_data *rules)
 {
+	// if (philo->n_eat >= rules->n_meals && rules->n_meals != -1)
+		// return;
 	pthread_mutex_lock(&(rules->forks_lock[philo->fork_left]));
 	print_event(rules, get_timestamp(), philo->id, "has taken a left fork");
 	pthread_mutex_lock(&(rules->forks_lock[philo->fork_right]));
