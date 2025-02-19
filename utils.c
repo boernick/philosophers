@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 17:25:07 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/08 18:04:50 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/19 16:18:31 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,3 @@ void	print_event(t_data *data, long long time, int id, char *str)
 		printf("%lld %i %s\n", time, id, str);
 	pthread_mutex_unlock(&(data->print_lock));
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 13:24:10 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/19 13:24:54 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/19 16:01:37 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,6 @@ void		print_event(t_data *data, long long time, int id, char *str);
 void		check_deceased(t_philo *philo, t_data *rules);
 void		join_threads(t_data *data);
 void		destroy_mutex(t_data *data);
+void		*philo_thread(void *void_philo);
 
 #endif

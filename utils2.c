@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 16:29:36 by nick              #+#    #+#             */
-/*   Updated: 2025/02/19 13:28:40 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/19 16:19:33 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	join_threads(t_data *data)
 	i = 0;
 	while (i < data->n_philos)
 	{
-		printf("end philo [%i]\n", i);
 		pthread_join(data->philo[i].id_thread, NULL);
 		i++;
 	}
@@ -52,7 +51,6 @@ int	mutex_init(t_data *data)
 	return (0);
 }
 
-
 // destroy mutex locks.
 void	destroy_mutex(t_data *data)
 {
@@ -65,4 +63,18 @@ void	destroy_mutex(t_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(&(data->meal_lock));
+}
+
+// check for input errors.
+int	wrong_input(t_data *rules, char **argv)
+{
+	if (rules->n_philos <= 1 || rules->n_philos > 100 || rules->t_eat < 0 
+		|| rules->t_sleep < 0 || rules->t_death < 0)
+		return (1);
+	if (argv[5])
+	{
+		if (rules->n_meals < 1)
+			return (1);
+	}
+	return (0);
 }
