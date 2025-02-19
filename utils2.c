@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nick <nick@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 16:29:36 by nick              #+#    #+#             */
-/*   Updated: 2025/02/16 16:30:18 by nick             ###   ########.fr       */
+/*   Updated: 2025/02/19 13:28:40 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	put_error(char *msg)
 //join threads.
 void	join_threads(t_data *data)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	while (i < data->n_philos)
 	{
@@ -56,7 +56,9 @@ int	mutex_init(t_data *data)
 // destroy mutex locks.
 void	destroy_mutex(t_data *data)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < data->n_philos)
 	{
 		pthread_mutex_destroy(&(data->forks_lock[i]));

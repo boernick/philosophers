@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nick <nick@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/16 16:30:05 by nick             ###   ########.fr       */
+/*   Updated: 2025/02/19 13:27:08 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*philo_thread(void *void_philo)
 {
 	t_philo	*philo;
 	t_data	*data;
-	
+
 	philo = (t_philo *)void_philo;
 	data = philo->data;
 	if (philo->id % 2)
@@ -48,7 +48,7 @@ void	*philo_thread(void *void_philo)
 	{
 		start_eat(philo, philo->data);
 		if (philo->data->end_meals)
-			break;
+			break ;
 		start_sleep(philo, philo->data);
 		start_think(philo, philo->data);
 	}
@@ -58,15 +58,16 @@ void	*philo_thread(void *void_philo)
 // create thread for each philosopher.
 int	launch_diner(t_data *data)
 {
-	int i;
-	int ret;
-	
+	int	i;
+	int	ret;
+
 	data->diner_start = get_timestamp();
 	i = 0;
 	ret = 0;
 	while (i < data->n_philos)
 	{
-		ret = pthread_create(&(data->philo[i].id_thread), NULL, philo_thread, &(data->philo[i]));
+		ret = pthread_create(&(data->philo[i].id_thread), 
+				NULL, philo_thread, &(data->philo[i]));
 		if (ret)
 			return (error_handler("error creating thread", ret));
 		i++;
@@ -75,7 +76,7 @@ int	launch_diner(t_data *data)
 }
 
 // initiates structs and error checks.
-int prepare_diner(t_data *rules, char **argv)
+int	prepare_diner(t_data *rules, char **argv)
 {
 	set_rules(rules, argv);
 	if (wrong_input(rules, argv))
@@ -123,21 +124,21 @@ void	check_diner_end(t_data *data)
 	while (!(data->end_meals))
 	{
 		i = 0;
-		while(i < data->n_philos && !(data->deceased))
+		while (i < data->n_philos && !(data->deceased))
 		{
 			check_deceased(&(data->philo[i]), data);
 			usleep(100);
 			i++;
 		}
 		if (data->deceased)
-			break;
+			break ;
 		i = 0;
-		while(data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
+		while (data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
 		{
 			if (i == data->n_philos - 1)
 			{
 				data->end_meals = 1;
-				return;
+				return ;
 			}
 			i++;
 		}
@@ -147,8 +148,8 @@ void	check_diner_end(t_data *data)
 int	main(int argc, char **argv)
 {
 	t_data	rules;
-	int ret;
-	
+	int		ret;
+
 	ret = 0;
 	if (argc != 5 && argc != 6)
 		return (put_error("Error: wrong argument count"));

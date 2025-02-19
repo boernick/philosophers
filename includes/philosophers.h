@@ -1,23 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/19 13:24:10 by nboer             #+#    #+#             */
+/*   Updated: 2025/02/19 13:24:54 by nboer            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-#include <sys/time.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "../includes/Libft/libft.h"
-#include "../includes/ft_printf/ft_printf.h"
+# include <sys/time.h>
+# include <sys/wait.h>
+# include <signal.h>
+# include <stdio.h>
+# include <string.h>
+# include <pthread.h>
+# include <semaphore.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include "../includes/Libft/libft.h"
+# include "../includes/ft_printf/ft_printf.h"
 
-struct s_data;
+struct	s_data;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int					id;
 	int					n_eat;
@@ -26,25 +38,25 @@ typedef struct	s_philo
 	long long			last_meal;
 	pthread_t			id_thread;
 	struct s_data		*data;
-} t_philo;
+}	t_philo;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	t_philo			philo[250];
 	int				n_philos;
-	int 			philos_dead;
-	int 			n_philos_fed;	
-	int 			t_death;
+	int				philos_dead;
+	int				n_philos_fed;	
+	int				t_death;
 	int				t_eat;
 	int				t_sleep;
 	int				n_meals;
-	int 			deceased;
+	int				deceased;
 	int				end_meals;
 	long long		diner_start;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	forks_lock[250];
 	pthread_mutex_t	meal_lock;
-} t_data;
+}	t_data;
 
 int			put_error(char *msg);
 int			init_philos(t_data *data);
