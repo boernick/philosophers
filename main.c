@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/19 16:19:13 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/23 14:02:46 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,24 @@ int	launch_diner(t_data *data)
 	int	i;
 	int	ret;
 
-	data->diner_start = get_timestamp();
 	i = 0;
 	ret = 0;
-	while (i < data->n_philos)
+	data->diner_start = get_timestamp(data);
+	if (data->n_philos == 1)
 	{
-		ret = pthread_create(&(data->philo[i].id_thread), 
-				NULL, philo_thread, &(data->philo[i]));
-		if (ret)
-			return (error_handler("error creating thread", ret));
-		i++;
+		print_event(data, get_timestamp(data), 0, "died");
+		ret = 1;
+	}
+	if (!ret)
+	{
+		while (i < data->n_philos)
+		{
+			ret = pthread_create(&(data->philo[i].id_thread), 
+					NULL, philo_thread, &(data->philo[i]));
+			if (ret)
+				return (error_handler("error creating thread", ret));
+			i++;
+		}
 	}
 	return (ret);
 }
@@ -35,13 +43,21 @@ int	launch_diner(t_data *data)
 // initiates structs and error checks.
 int	prepare_diner(t_data *rules, char **argv)
 {
+	int ret;
+	
+	ret = 0;
 	set_rules(rules, argv);
-	if (wrong_input(rules, argv))
-		return (put_error("wrong input"));
-	if (mutex_init(rules))
-		return (put_error("mutex init failed"));
-	init_philos(rules);
-	return (0);
+	ret = wrong_input(rules, argv);
+	if (ret)
+	{
+		ft_printf("Args: n_philos, t_die, t_eat, t_sleep, n_meals\n");
+		return (put_error("Error: wrong input"));
+	}
+	if (!ret && mutex_init(rules))
+		ret = put_error("mutex init failed");
+	if (!ret)
+		init_philos(rules);
+	return (ret);
 }
 
 // init rules from arguments given by user.
@@ -66,15 +82,11 @@ void	check_diner_end(t_data *data)
 
 	while (!(data->end_meals))
 	{
-		i = 0;
-		while (i < data->n_philos && !(data->deceased))
-		{
+		i = -1;
+		while (++i < data->n_philos && !(data->deceased))
 			check_deceased(&(data->philo[i]), data);
-			usleep(100);
-			i++;
-		}
 		if (data->deceased)
-			break ;
+			return ;
 		i = 0;
 		while (data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
 		{
@@ -85,6 +97,7 @@ void	check_diner_end(t_data *data)
 			}
 			i++;
 		}
+		usleep(1000);
 	}
 }
 
@@ -97,12 +110,16 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 	{
 		ft_printf("Args: n_philos, t_die, t_eat, t_sleep, n_meals\n");
-		return (put_error("Error: wrong argument count"));
+		return (put_error("Error: wrong input"));
 	}
-	prepare_diner(&rules, argv);
-	ret = launch_diner(&rules);
-	check_diner_end(&rules);
-	join_threads(&rules);
-	destroy_mutex(&rules);
+	ret = prepare_diner(&rules, argv);
+	if (!ret)
+		ret = launch_diner(&rules);
+	if (!ret)
+	{
+		check_diner_end(&rules);
+		join_threads(&rules);
+		destroy_mutex(&rules);
+	}
 	return (ret);
 }

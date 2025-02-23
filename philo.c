@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 16:00:15 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/19 16:19:59 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/23 14:00:20 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	init_philos(t_data *data)
 		data->philo[i].fork_left = i;
 		data->philo[i].fork_right = (i + 1) % data->n_philos;
 		data->philo[i].data = data;
-		data->philo[i].last_meal = get_timestamp();
+		data->philo[i].last_meal = get_timestamp(data);
 		i++;
 	}
 	return (0);
@@ -40,16 +40,18 @@ void	*philo_thread(void *void_philo)
 	philo = (t_philo *)void_philo;
 	data = philo->data;
 	if (philo->id % 2)
-		usleep(3000);
-	if (!data)
-		put_error("data is NULL");
-	while (!(philo->data->deceased) && !(philo->data->end_meals))
+		usleep(1000);
+	while (!(data->deceased) && !(data->end_meals))
 	{
-		start_eat(philo, philo->data);
-		if (philo->data->end_meals)
+		start_eat(philo, data);
+		if (data->deceased || data->end_meals)
 			break ;
-		start_sleep(philo, philo->data);
-		start_think(philo, philo->data);
+		start_sleep(philo, data);
+		if (data->deceased || data->end_meals)
+			break ;
+		start_think(philo, data);
+		if (data->deceased || data->end_meals)
+			break ;
 	}
 	return (NULL);
 }

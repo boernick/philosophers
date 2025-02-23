@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 18:07:42 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/19 16:18:45 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/23 13:57:03 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,27 @@
 void	do_event(long long time, t_data *rules)
 {
 	long long	t_start;
+	long long	t_now;
 
-	t_start = get_timestamp();
+	t_start = get_timestamp(rules);
 	while (!rules->deceased)
 	{
-		if (d_time(t_start, get_timestamp()) >= time)
+		t_now = get_timestamp(rules);
+		if (d_time(t_start, t_now) >= time)
 			break ;
-		usleep(100);
+		usleep(50);
 	}
 }
 
 void	start_eat(t_philo *philo, t_data *rules)
 {
 	pthread_mutex_lock(&(rules->forks_lock[philo->fork_left]));
-	print_event(rules, get_timestamp(), philo->id, "has taken a left fork");
+	print_event(rules, get_timestamp(rules), philo->id, "has taken a left fork");
 	pthread_mutex_lock(&(rules->forks_lock[philo->fork_right]));
-	print_event(rules, get_timestamp(), philo->id, "has taken a right fork");
+	print_event(rules, get_timestamp(rules), philo->id, "has taken a right fork");
 	pthread_mutex_lock(&(rules->meal_lock));
-	print_event(rules, get_timestamp(), philo->id, "is eating");
-	philo->last_meal = get_timestamp();
+	print_event(rules, get_timestamp(rules), philo->id, "is eating");
+	philo->last_meal = get_timestamp(rules);
 	pthread_mutex_unlock(&(rules->meal_lock));
 	(philo->n_eat)++;
 	do_event(rules->t_eat, rules);
@@ -43,22 +45,27 @@ void	start_eat(t_philo *philo, t_data *rules)
 
 void	start_sleep(t_philo *philo, t_data *rules)
 {
-	print_event(rules, get_timestamp(), philo->id, "is sleeping");
+	print_event(rules, get_timestamp(rules), philo->id, "is sleeping");
 	do_event(rules->t_sleep, rules);
 }
 
 void	start_think(t_philo *philo, t_data *rules)
 {
-	print_event(rules, get_timestamp(), philo->id, "is thinking");
+	print_event(rules, get_timestamp(rules), philo->id, "is thinking");
 }
 
 void	check_deceased(t_philo *philo, t_data *data)
 {
-	pthread_mutex_lock(&(data->meal_lock));
-	if (d_time(philo->last_meal, get_timestamp()) > data->t_death)
+	long	now;
+
+	now = get_timestamp(data);
+
+	if (d_time(philo->last_meal, now) > data->t_death)
 	{
-		print_event(data, get_timestamp(), philo->id, "died");
+		pthread_mutex_lock(&(data->meal_lock));
+		print_event(data, now - 1, philo->id, "died");
 		data->deceased = 1;
+		pthread_mutex_unlock(&(data->meal_lock));
 	}
-	pthread_mutex_unlock(&(data->meal_lock));
+
 }
