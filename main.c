@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 14:02:46 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/23 14:08:45 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ int	launch_diner(t_data *data)
 // initiates structs and error checks.
 int	prepare_diner(t_data *rules, char **argv)
 {
-	int ret;
-	
+	int	ret;
+
 	ret = 0;
 	set_rules(rules, argv);
 	ret = wrong_input(rules, argv);

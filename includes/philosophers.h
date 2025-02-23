@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 13:24:10 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 13:33:40 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/23 14:09:15 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void		set_rules(t_data *rules, char **argv);
 void		check_diner_end(t_data *data);
 int			error_handler(char *str, int ret);
 long long	d_time(long long past, long long cur);
-long 		get_timestamp(t_data *data);
+long		get_timestamp(t_data *data);
 void		print_event(t_data *data, long long time, int id, char *str);
 void		check_deceased(t_philo *philo, t_data *rules);
 void		join_threads(t_data *data);
