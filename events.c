@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 18:07:42 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 14:08:15 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 09:48:10 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	do_event(long long time, t_data *rules)
 		t_now = get_timestamp(rules);
 		if (d_time(t_start, t_now) >= time)
 			break ;
-		usleep(50);
+		usleep(100);
 	}
 }
 
