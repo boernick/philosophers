@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 18:07:42 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/27 09:48:10 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 10:02:47 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	check_deceased(t_philo *philo, t_data *data)
 	if (d_time(philo->last_meal, now) > data->t_death)
 	{
 		pthread_mutex_lock(&(data->meal_lock));
-		print_event(data, now - 1, philo->id, "died");
+		print_event(data, now, philo->id, "died");
 		data->deceased = 1;
 		pthread_mutex_unlock(&(data->meal_lock));
 	}
