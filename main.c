@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:26:16 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 14:08:45 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 15:23:00 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	set_rules(t_data *rules, char **argv)
 	rules->t_sleep = ft_atoi(argv[4]);
 	rules->philos_dead = 0;
 	rules->n_philos_fed = 0;
+	rules->deceased = 0;
 	if (argv[5])
 		rules->n_meals = ft_atoi(argv[5]);
 	else 
@@ -80,7 +81,7 @@ void	check_diner_end(t_data *data)
 {
 	int	i;
 
-	while (!(data->end_meals))
+	while (!(get_end_meals(data)))
 	{
 		i = -1;
 		while (++i < data->n_philos && !(data->deceased))
@@ -88,17 +89,29 @@ void	check_diner_end(t_data *data)
 		if (data->deceased)
 			return ;
 		i = 0;
-		while (data->philo[i].n_eat >= data->n_meals && data->n_meals != -1)
+		while (get_n_eat(i, data) >= data->n_meals && data->n_meals != -1)
 		{
 			if (i == data->n_philos - 1)
 			{
+				pthread_mutex_lock(&(data->end_meals_lock));
 				data->end_meals = 1;
+				pthread_mutex_unlock(&(data->end_meals_lock));
 				return ;
 			}
 			i++;
 		}
 		usleep(1000);
 	}
+}
+
+int get_n_eat(int i, t_data *data)
+{
+	int ret;
+
+	pthread_mutex_lock(&(data->meal_lock[i]));
+	ret = data->philo[i].n_eat;
+	pthread_mutex_unlock(&(data->meal_lock[i]));
+	return (ret);
 }
 
 int	main(int argc, char **argv)

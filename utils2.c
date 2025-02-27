@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 16:29:36 by nick              #+#    #+#             */
-/*   Updated: 2025/02/23 12:50:39 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 15:04:50 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,13 @@ int	mutex_init(t_data *data)
 	{
 		if (pthread_mutex_init(&(data->forks_lock[i]), NULL))
 			return (1);
+		if (pthread_mutex_init(&(data->meal_lock[i]), NULL))
+			return (1);
 		i++;
 	}
 	if (pthread_mutex_init(&(data->print_lock), NULL))
 		return (1);
-	if (pthread_mutex_init(&(data->meal_lock), NULL))
+	if (pthread_mutex_init(&(data->end_meals_lock), NULL))
 		return (1);
 	return (0);
 }
@@ -60,9 +62,11 @@ void	destroy_mutex(t_data *data)
 	while (i < data->n_philos)
 	{
 		pthread_mutex_destroy(&(data->forks_lock[i]));
+		pthread_mutex_destroy(&(data->meal_lock[i]));
 		i++;
 	}
-	pthread_mutex_destroy(&(data->meal_lock));
+	pthread_mutex_destroy(&(data->print_lock));
+	pthread_mutex_destroy(&(data->end_meals_lock));
 }
 
 // check for input errors.

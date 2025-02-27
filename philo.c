@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 16:00:15 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 14:00:20 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 15:21:34 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,16 @@ int	init_philos(t_data *data)
 	return (0);
 }
 
+int get_end_meals(t_data *data)
+{
+	int ret;
+
+	pthread_mutex_lock(&(data->end_meals_lock));
+	ret = data->end_meals;
+	pthread_mutex_unlock(&(data->end_meals_lock));
+	return (ret);
+}
+
 // function to run by every thread, resembling a philo.
 void	*philo_thread(void *void_philo)
 {
@@ -44,14 +54,10 @@ void	*philo_thread(void *void_philo)
 	while (!(data->deceased) && !(data->end_meals))
 	{
 		start_eat(philo, data);
-		if (data->deceased || data->end_meals)
+		if (data->deceased || get_end_meals(data))
 			break ;
 		start_sleep(philo, data);
-		if (data->deceased || data->end_meals)
-			break ;
 		start_think(philo, data);
-		if (data->deceased || data->end_meals)
-			break ;
 	}
 	return (NULL);
 }

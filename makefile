@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g # -g flag for debugger info
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address # -g flag for debugger info
 SRCS = main.c utils.c events.c utils2.c philo.c
 
 OBJS = $(SRCS:.c=.o)

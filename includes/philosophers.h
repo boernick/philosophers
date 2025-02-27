@@ -6,7 +6,7 @@
 /*   By: nboer <nboer@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 13:24:10 by nboer             #+#    #+#             */
-/*   Updated: 2025/02/23 14:09:15 by nboer            ###   ########.fr       */
+/*   Updated: 2025/02/27 15:15:20 by nboer            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ typedef struct s_data
 	long long		diner_start;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	forks_lock[250];
-	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	meal_lock[250];
+	pthread_mutex_t	end_meals_lock;
 }	t_data;
 
 int			put_error(char *msg);
@@ -78,5 +79,8 @@ void		check_deceased(t_philo *philo, t_data *rules);
 void		join_threads(t_data *data);
 void		destroy_mutex(t_data *data);
 void		*philo_thread(void *void_philo);
+int 		get_n_eat(int i, t_data *data);
+int 		get_end_meals(t_data *data);
+
 
 #endif
